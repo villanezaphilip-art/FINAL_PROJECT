@@ -1,0 +1,414 @@
+<?php
+
+$user = isset($_SESSION['member_name']) ? $_SESSION['member_name'] : 'Guest';
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOVIE FINDER</title>
+<link rel="stylesheet" href="huhu.css"> <!-- Assuming this is still relevant; update if needed -->
+<style>
+.welcome-section {
+  margin: 20px 0 10px 60px;
+}
+
+.welcome-section h2 {
+  font-size: 24px;   /* Slightly larger for emphasis */
+  font-weight: 700;  /* Bolder for a dramatic feel */
+  color: #ffffff;    /* White text for contrast on dark background */
+}
+
+.welcome-section .username {
+  font-weight: 800;
+  background-color: #e74c3c; /* Red highlight for movie theme */
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.footer {
+  width: 100%;
+  background-color: #1a1a2e;   /* Dark background for cinematic feel */
+  border-top: 2px solid #e74c3c; /* Red border for accent */
+  box-shadow: 0 -2px 8px rgba(231, 76, 60, 0.3); /* Subtle red shadow */
+  padding: 15px 0;
+  text-align: center;
+  margin-top: 40px;
+}
+.footer p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #ffffff; /* White text for readability */
+}
+.footer .highlight {
+  font-weight: bold;
+  color: #e74c3c; /* Red for emphasis */
+}
+/* ==============================
+   Updated Color Palette (Movie Theme: Dark Cinematic)
+   ============================== */
+:root {
+  --bg: #1a1a2e;     /* Dark blue-gray background for a theater vibe */
+  --fg: #ffffff;     /* White text for contrast */
+  --accent: #e74c3c; /* Red accent for excitement (e.g., red carpet) */
+  --muted: #6c757d;  /* Soft gray for secondary text */
+  --radius: 14px;
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  border-bottom: 1px solid #e74c3c; /* Red border for theme */
+  position: sticky;
+  top: 0;
+  background: #1a1a2e; /* Dark background */
+  z-index: 100;
+}
+
+header .logo a {
+  font-size: 1.8em; /* Slightly larger for impact */
+  font-weight: 800;
+  color: var(--accent); /* Red color */
+  text-decoration: none;
+}
+
+header nav a {
+  margin-left: 24px;
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--fg);
+  transition: color 0.2s;
+}
+
+header nav a:hover {
+  color: var(--accent); /* Red hover for emphasis */
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 30px;
+}
+
+/* ==============================
+   Hero Section
+   ============================== */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  max-width: 1100px;
+  width: 100%;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.hero-text h1 {
+  font-size: 2.8em; /* Larger for dramatic effect */
+  font-weight: 800;
+  margin-bottom: 15px;
+  color: var(--fg);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Subtle shadow for depth */
+}
+
+.hero-text p {
+  color: var(--muted);
+  margin-bottom: 25px;
+  font-size: 1.1em; /* Slightly larger for readability */
+}
+
+.hero img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 6px 16px rgba(231, 76, 60, 0.2); /* Red-tinted shadow */
+}
+
+/* ==============================
+   Search Bar
+   ============================== */
+.search-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Subtle shadow for buttons */
+}
+
+.search-bar input,
+.search-bar select,
+.search-bar button {
+  padding: 12px 16px; /* Slightly larger padding */
+  border-radius: var(--radius);
+  border: 1px solid #e74c3c; /* Red border */
+  font-size: 1em;
+  background: #2c2c3e; /* Dark input background */
+  color: var(--fg);
+}
+
+.search-bar button {
+  background: var(--accent); /* Red background */
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3); /* Shadow for button text */
+}
+
+.search-bar button:hover {
+  background: #c0392b; /* Darker red for hover */
+}
+
+/* ==============================
+   Results Info
+   ============================== */
+#resultsInfo {
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: var(--accent);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2); /* Subtle shadow */
+}
+
+/* ==============================
+   Recipe Cards (Now Movie Cards)
+   ============================== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #2c2c3e; /* Darker card background */
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.15); /* Red shadow */
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(231, 76, 60, 0.25);
+}
+
+.card .image-container {
+  position: relative;
+}
+
+.card img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  filter: brightness(90%); /* Subtle dim for movie poster effect */
+}
+
+.card h3 {
+  font-size: 1.2em;
+  margin: 6px 0;
+  color: var(--fg);
+  min-height: 2.4em;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.card button {
+  margin-top: auto;
+  padding: 8px 14px; /* Slightly larger */
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.9em;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.card button:hover {
+  background: #c0392b;
+}
+
+/* Add button */
+.card .add-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 6px 10px;
+  font-size: 1em;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.card .add-btn:hover {
+  background: #c0392b;
+}
+
+/* Random Movie Label */
+.random-card {
+  border: 2px dashed var(--accent); /* Red dashed border */
+}
+
+.random-card .label-random {
+  display: inline-block;
+  margin: 5px 0;
+  padding: 2px 6px;
+  background-color: var(--accent);
+  color: #fff;
+  font-size: 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+/* ==============================
+   Modal
+   ============================== */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #2c2c3e;
+  padding: 20px;
+  width: 90%;
+  max-width: 650px;
+  border-radius: var(--radius);
+  position: relative;
+  overflow-y: auto;
+  max-height: 90vh;
+  box-shadow: 0 4px 20px rgba(231, 76, 60, 0.3);
+}
+
+#closeModal {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--fg);
+}
+
+/* ==============================
+   Random Movie Button
+   ============================== */
+#randomRecipeBtn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+#randomRecipeBtn:hover {
+  background: #c0392b;
+}
+
+/* ==============================
+   Responsive
+   ============================== */
+@media(max-width:900px){
+  .hero { grid-template-columns: 1fr; text-align: center; }
+  .hero img { max-width: 320px; margin: auto; }
+}
+</style>
+</head>
+<body>
+ <header class="navbar">
+  <div class="logo">
+    <a href="/WST_RecipeFinder/index.html">Lippy's - Movie Finder</a>
+  </div>
+  <nav>
+    <a href="Homepage.php">Home</a>
+    <a href="Myrecipes.php">My Movies</a> <!-- Updated text for context -->
+    <a href="logout.php">Logout</a>
+  </nav>
+</header>
+
+<div class="welcome-section">
+  <h2>  
+    <span class="username"><?php echo htmlspecialchars($user); ?></span>
+  </h2>
+</div>
+<main>
+ <!-- Hero Section -->
+<section class="hero" id="heroSection">
+  <div class="hero-left">
+    <h1>Welcome To The World of Movies</h1>
+    <p>Epic stories and thrilling adventures await.</p>
+
+    <!-- Search bar -->
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search movies">
+      <select id="categorySelect"></select>
+      <select id="sortSelect">
+        <option value="az">Latest Movies</option>
+        <option value="za">Recent Movies</option>
+      </select>
+      <button id="searchBtn">Search</button>
+      <button id="randomMovieBtn">Random Movie</button> <!-- Updated button text -->
+    </div>
+  </div>
+  <div class="hero-image" id="heroImage">
+    <img src="image.png" alt="Movie Spotlight"> <!-- Update this image path to a movie-related one if available -->
+  </div>
+</section>
+
+<!-- Results Section -->
+<section style="width:100%; max-width:1200px; margin:0 auto; padding:0 20px;">
+  <div id="resultsInfo"></div>
+  <div id="results" class="grid"></div>
+</section>
+</main>
+
+<!-- Modal -->
+<div id="movieModal" class="modal">
+  <div class="modal-content">
+    <span id="closeModal">&times;</span>
+    <div id="movieDetails"></div>
+  </div>
+</div>
+
+<script src="../../backend/script/Homepage.js"></script> <!-- Update script if logic changes -->
+<footer class="footer">
+  <div class="footer-box">
+    <p>&copy; <?php echo date("Y"); ?> Lippy - Movie Finder</p>
+    <p>Developer: <span class="highlight">Philip</span></p>
+  </div>
+</footer>
+</body>
+</html>
